@@ -31,6 +31,8 @@ export interface PatrimonialBuilderState {
   generateOutput: () => void;
   resetCase: () => void;
   answerClauseDecisionQuestion: (clauseId: string, questionId: string, value: string) => void;
+  selectClauseTemplate: (clauseId: string, templateId: string) => void;
+  toggleClauseComplementaryBlock: (clauseId: string, templateId: string) => void;
   saveClauseCustomization: (clauseId: string) => void;
 }
 
@@ -133,6 +135,8 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
       clauseId,
       answers: {},
       activatedDraftBlocks: [],
+      selectedTemplateId: null,
+      selectedComplementaryIds: [],
       customDocumentAllocation: null,
       customAlerts: [],
       draftPreview: "",
@@ -165,8 +169,43 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
     });
   },
 
+  selectClauseTemplate: (clauseId, templateId) => {
+    const state = get();
+    const existing = state.clauseDraftStates[clauseId] || {
+      clauseId, answers: {}, activatedDraftBlocks: [],
+      selectedTemplateId: null, selectedComplementaryIds: [],
+      customDocumentAllocation: null, customAlerts: [], draftPreview: "",
+    };
+    set({
+      clauseDraftStates: {
+        ...state.clauseDraftStates,
+        [clauseId]: {
+          ...existing,
+          selectedTemplateId: existing.selectedTemplateId === templateId ? null : templateId,
+        },
+      },
+    });
+  },
+
+  toggleClauseComplementaryBlock: (clauseId, templateId) => {
+    const state = get();
+    const existing = state.clauseDraftStates[clauseId] || {
+      clauseId, answers: {}, activatedDraftBlocks: [],
+      selectedTemplateId: null, selectedComplementaryIds: [],
+      customDocumentAllocation: null, customAlerts: [], draftPreview: "",
+    };
+    const ids = existing.selectedComplementaryIds.includes(templateId)
+      ? existing.selectedComplementaryIds.filter((id) => id !== templateId)
+      : [...existing.selectedComplementaryIds, templateId];
+    set({
+      clauseDraftStates: {
+        ...state.clauseDraftStates,
+        [clauseId]: { ...existing, selectedComplementaryIds: ids },
+      },
+    });
+  },
+
   saveClauseCustomization: (clauseId) => {
-    // Already persisted in state; this is a no-op confirmation
     const state = get();
     const draft = state.clauseDraftStates[clauseId];
     if (draft) {
