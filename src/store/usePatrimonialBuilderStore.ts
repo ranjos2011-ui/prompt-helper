@@ -31,6 +31,8 @@ export interface PatrimonialBuilderState {
   generateOutput: () => void;
   resetCase: () => void;
   answerClauseDecisionQuestion: (clauseId: string, questionId: string, value: string) => void;
+  selectClauseTemplate: (clauseId: string, templateId: string) => void;
+  toggleClauseComplementaryBlock: (clauseId: string, templateId: string) => void;
   saveClauseCustomization: (clauseId: string) => void;
 }
 
