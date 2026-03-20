@@ -9,6 +9,8 @@ export const documentTypeLabels: Record<DocumentType, string> = {
   memorando_riscos: "Memorando de Riscos",
   memorando_tributario: "Memorando Tributário",
   documento_internacional: "Documento Internacional",
+  seguro_vida: "Seguro de Vida",
+  alteracao_contratual: "Alteração Contratual",
   ambos: "Contrato Social + Acordo de Sócios",
 };
 
