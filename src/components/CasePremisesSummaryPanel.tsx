@@ -1,5 +1,5 @@
-import { usePatrimonialBuilderStore } from "../../store/usePatrimonialBuilderStore";
-import { generateProjectPremises } from "../../lib/premisesEngine";
+import { usePatrimonialBuilderStore } from "../store/usePatrimonialBuilderStore";
+import { generateProjectPremises } from "../lib/premisesEngine";
 import { CheckCircle2 } from "lucide-react";
 
 export function CasePremisesSummaryPanel() {

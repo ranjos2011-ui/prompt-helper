@@ -23,7 +23,7 @@ const clausePremiseMapping: Record<string, string[]> = {
   cl_conselho_familiar: ["prem_herdeiros", "prem_governanca_morte"],
   cl_admin_interina: ["prem_governanca_morte", "prem_gestao"],
   cl_liquidacao_haveres: ["prem_liquidez"],
-  cl_valuation: O["prem_liquidez"],
+  cl_valuation: ["prem_liquidez"],
   cl_compra_compulsoria: ["prem_liquidez"],
   cl_saida_dissidente: ["prem_liquidez"],
   cl_mediacao: ["prem_objetivo"],
