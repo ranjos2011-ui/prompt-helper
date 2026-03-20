@@ -1,4 +1,4 @@
-import { DocumentType, ClausePriority, RiskStatus, ClauseCategory } from "../types/enums";
+import { DocumentType, ClausePriority, RiskStatus, ClauseCategory, DocumentHierarchyTier } from "../types/enums";
 
 export const documentTypeLabels: Record<DocumentType, string> = {
   contrato_social: "Contrato Social",
