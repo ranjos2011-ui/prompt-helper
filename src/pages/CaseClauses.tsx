@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppShell } from "../components/AppShell";
 import { usePatrimonialBuilderStore } from "../store/usePatrimonialBuilderStore";
 import { mockCase } from "../data/mockCase";
 import { clauses } from "../data/clauses";
 import { priorityLabels, priorityColors, categoryLabels, documentTypeLabels } from "../lib/labels";
 import { ClauseCategory, ClausePriority } from "../types/enums";
-import { FileText, Filter, AlertCircle, Link2, Ban } from "lucide-react";
+import { FileText, Filter, AlertCircle, Link2, Ban, ChevronRight } from "lucide-react";
 
 export default function CaseClauses() {
   const { caseProfile, setCaseProfile, recommendations } = usePatrimonialBuilderStore();
+  const navigate = useNavigate();
   const [filterCategory, setFilterCategory] = useState<ClauseCategory | "all">("all");
   const [filterPriority, setFilterPriority] = useState<ClausePriority | "all">("all");
 
@@ -71,7 +73,11 @@ export default function CaseClauses() {
         {/* Clause cards */}
         <div className="space-y-3">
           {filtered.map(({ clause, rec }) => (
-            <div key={clause.id} className="border border-border rounded-lg bg-card overflow-hidden">
+            <div
+              key={clause.id}
+              className="border border-border rounded-lg bg-card overflow-hidden cursor-pointer transition-all hover:shadow-md hover:border-primary/20 active:scale-[0.995]"
+              onClick={() => navigate(`/case/${caseProfile?.id || 'case-001'}/clauses/${clause.id}`)}
+            >
               <div className="p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1">
@@ -148,6 +154,11 @@ export default function CaseClauses() {
                 {rec.allocationRationale && (
                   <p className="text-[11px] text-muted-foreground/70 mt-3 italic">{rec.allocationRationale}</p>
                 )}
+
+                <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">Clique para abrir o builder da cláusula</span>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </div>
               </div>
             </div>
           ))}

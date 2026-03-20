@@ -9,6 +9,7 @@ import NewCase from "./pages/NewCase";
 import CaseOverview from "./pages/CaseOverview";
 import CaseQuestions from "./pages/CaseQuestions";
 import CaseClauses from "./pages/CaseClauses";
+import ClauseDetail from "./pages/ClauseDetail";
 import CaseDocuments from "./pages/CaseDocuments";
 import CaseRisks from "./pages/CaseRisks";
 import CaseOutput from "./pages/CaseOutput";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/case/:id/overview" element={<CaseOverview />} />
           <Route path="/case/:id/questions" element={<CaseQuestions />} />
           <Route path="/case/:id/clauses" element={<CaseClauses />} />
+          <Route path="/case/:id/clauses/:clauseId" element={<ClauseDetail />} />
           <Route path="/case/:id/documents" element={<CaseDocuments />} />
           <Route path="/case/:id/risks" element={<CaseRisks />} />
           <Route path="/case/:id/output" element={<CaseOutput />} />

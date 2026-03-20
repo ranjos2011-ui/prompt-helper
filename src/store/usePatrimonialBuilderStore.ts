@@ -3,12 +3,15 @@ import { CaseProfile } from "../types/case";
 import { OutputDocument } from "../types/output";
 import { Recommendation } from "../types/recommendation";
 import { Risk } from "../types/risk";
+import { ClauseDraftState } from "../types/clauseBuilder";
 import { EntryMode, ModuleId } from "../types/enums";
 import { clauses } from "../data/clauses";
 import { risks as initialRisks } from "../data/risks";
 import { buildRecommendations } from "../lib/recommendationEngine";
 import { recalculateRisks } from "../lib/riskEngine";
 import { generateOutput } from "../lib/outputEngine";
+import { clauseDetailConfigs } from "../data/clauseDetails";
+import { computeActivatedBlocks, generateDraftPreview, computeCustomAlerts } from "../lib/clauseDraftEngine";
 
 export interface PatrimonialBuilderState {
   caseProfile: CaseProfile | null;
@@ -19,6 +22,7 @@ export interface PatrimonialBuilderState {
   alerts: string[];
   completedQuestionIds: string[];
   output: OutputDocument | null;
+  clauseDraftStates: Record<string, ClauseDraftState>;
 
   setCaseProfile: (profile: CaseProfile) => void;
   answerQuestion: (questionId: string, answerValue: string) => void;
@@ -26,6 +30,8 @@ export interface PatrimonialBuilderState {
   recalculateAll: () => void;
   generateOutput: () => void;
   resetCase: () => void;
+  answerClauseDecisionQuestion: (clauseId: string, questionId: string, value: string) => void;
+  saveClauseCustomization: (clauseId: string) => void;
 }
 
 export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, get) => ({
@@ -37,10 +43,10 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
   alerts: [],
   completedQuestionIds: [],
   output: null,
+  clauseDraftStates: {},
 
   setCaseProfile: (profile) => {
     set({ caseProfile: profile });
-    // Auto-recalculate
     setTimeout(() => get().recalculateAll(), 0);
   },
 
@@ -117,6 +123,59 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
       alerts: [],
       completedQuestionIds: [],
       output: null,
+      clauseDraftStates: {},
     });
+  },
+
+  answerClauseDecisionQuestion: (clauseId, questionId, value) => {
+    const state = get();
+    const existing = state.clauseDraftStates[clauseId] || {
+      clauseId,
+      answers: {},
+      activatedDraftBlocks: [],
+      customDocumentAllocation: null,
+      customAlerts: [],
+      draftPreview: "",
+    };
+
+    const newAnswers = { ...existing.answers, [questionId]: value };
+    const config = clauseDetailConfigs[clauseId];
+
+    let activatedDraftBlocks = existing.activatedDraftBlocks;
+    let draftPreview = existing.draftPreview;
+    let customAlerts = existing.customAlerts;
+
+    if (config) {
+      activatedDraftBlocks = computeActivatedBlocks(config, newAnswers);
+      draftPreview = generateDraftPreview(config, activatedDraftBlocks);
+      customAlerts = computeCustomAlerts(config, newAnswers);
+    }
+
+    set({
+      clauseDraftStates: {
+        ...state.clauseDraftStates,
+        [clauseId]: {
+          ...existing,
+          answers: newAnswers,
+          activatedDraftBlocks,
+          draftPreview,
+          customAlerts,
+        },
+      },
+    });
+  },
+
+  saveClauseCustomization: (clauseId) => {
+    // Already persisted in state; this is a no-op confirmation
+    const state = get();
+    const draft = state.clauseDraftStates[clauseId];
+    if (draft) {
+      set({
+        clauseDraftStates: {
+          ...state.clauseDraftStates,
+          [clauseId]: { ...draft },
+        },
+      });
+    }
   },
 }));
