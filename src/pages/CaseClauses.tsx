@@ -154,6 +154,11 @@ export default function CaseClauses() {
                 {rec.allocationRationale && (
                   <p className="text-[11px] text-muted-foreground/70 mt-3 italic">{rec.allocationRationale}</p>
                 )}
+
+                <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">Clique para abrir o builder da cláusula</span>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </div>
               </div>
             </div>
           ))}
