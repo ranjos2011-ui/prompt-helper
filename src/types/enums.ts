@@ -81,7 +81,16 @@ export type DocumentType =
   | "memorando_riscos"
   | "memorando_tributario"
   | "documento_internacional"
+  | "seguro_vida"
+  | "alteracao_contratual"
   | "ambos";
+
+export type DocumentHierarchyTier =
+  | "central"
+  | "estrutural_contrato"
+  | "complementar_acordo"
+  | "instrumento_complementar"
+  | "implementacao";
 
 export type SensitivityLevel =
   | "baixo"
