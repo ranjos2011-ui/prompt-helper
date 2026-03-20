@@ -17,6 +17,7 @@ import { ClauseOptionTemplatePanel } from "../components/clause-builder/ClauseOp
 import { ClauseDocumentArchitecturePanel } from "../components/clause-builder/ClauseDocumentArchitecturePanel";
 import { ClauseContextSidebar } from "../components/clause-builder/ClauseContextSidebar";
 import { ClauseChoiceSummaryPanel } from "../components/clause-builder/ClauseChoiceSummaryPanel";
+import { ClauseRelevantPremisesPanel } from "../components/clause-builder/ClauseRelevantPremisesPanel";
 import { toast } from "sonner";
 
 export default function ClauseDetail() {
