@@ -46,6 +46,9 @@ export default function CaseClauses() {
           </div>
         </div>
 
+        {/* Premises panel */}
+        <CasePremisesSummaryPanel />
+
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
           <Filter className="h-4 w-4 text-muted-foreground" />
