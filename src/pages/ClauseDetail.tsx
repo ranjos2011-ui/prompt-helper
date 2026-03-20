@@ -9,9 +9,11 @@ import { computeActivatedBlocks, generateDraftPreview, computeCustomAlerts } fro
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ClauseDetailHeader } from "../components/clause-builder/ClauseDetailHeader";
 import { ClauseDefaultRuleCard } from "../components/clause-builder/ClauseDefaultRuleCard";
+import { ClauseProblemCards } from "../components/clause-builder/ClauseProblemCards";
 import { ClauseDecisionWizard } from "../components/clause-builder/ClauseDecisionWizard";
 import { ClauseImpactPanel } from "../components/clause-builder/ClauseImpactPanel";
 import { ClauseDraftPreview } from "../components/clause-builder/ClauseDraftPreview";
+import { ClauseOptionTemplatePanel } from "../components/clause-builder/ClauseOptionTemplatePanel";
 import { ClauseDocumentArchitecturePanel } from "../components/clause-builder/ClauseDocumentArchitecturePanel";
 import { ClauseContextSidebar } from "../components/clause-builder/ClauseContextSidebar";
 import { ClauseChoiceSummaryPanel } from "../components/clause-builder/ClauseChoiceSummaryPanel";
@@ -28,6 +30,8 @@ export default function ClauseDetail() {
     clauseDraftStates,
     answerClauseDecisionQuestion,
     saveClauseCustomization,
+    selectClauseTemplate,
+    toggleClauseComplementaryBlock,
   } = usePatrimonialBuilderStore();
 
   useEffect(() => {
@@ -55,7 +59,20 @@ export default function ClauseDetail() {
     return computeCustomAlerts(config, answers);
   }, [config, answers]);
 
-  const hasChanges = Object.keys(answers).length > 0;
+  // Determine recommended template based on answers
+  const recommendedTemplateId = useMemo(() => {
+    if (!config) return null;
+    const a = answers;
+    if (a.dq_manter_regra_padrao === "manter") return "tpl_a_liquidacao";
+    if (a.dq_ingresso_automatico === "sim") return "tpl_b_ingresso_automatico";
+    if (a.dq_ingresso_automatico === "parcial" || a.dq_separacao_economica_politica === "sim") return "tpl_c_ingresso_economico";
+    if (a.dq_ingresso_automatico === "nao") return "tpl_d_ingresso_condicionado";
+    if (a.dq_aquisicao_remanescentes === "sim_preferencia" || a.dq_aquisicao_remanescentes === "sim_compulsoria") return "tpl_e_compra_remanescentes";
+    if (a.dq_tratamento_igual === "nao") return "tpl_f_hibrida";
+    return null;
+  }, [config, answers]);
+
+  const hasChanges = Object.keys(answers).length > 0 || !!draftState?.selectedTemplateId;
 
   if (!clause || !recommendation) {
     return (
@@ -71,9 +88,7 @@ export default function ClauseDetail() {
   }
 
   const handleAnswer = (questionId: string, value: string) => {
-    if (clauseId) {
-      answerClauseDecisionQuestion(clauseId, questionId, value);
-    }
+    if (clauseId) answerClauseDecisionQuestion(clauseId, questionId, value);
   };
 
   const handleSave = () => {
@@ -81,6 +96,14 @@ export default function ClauseDetail() {
       saveClauseCustomization(clauseId);
       toast.success("Customização salva com sucesso.");
     }
+  };
+
+  const handleSelectTemplate = (templateId: string) => {
+    if (clauseId) selectClauseTemplate(clauseId, templateId);
+  };
+
+  const handleToggleComplementary = (templateId: string) => {
+    if (clauseId) toggleClauseComplementaryBlock(clauseId, templateId);
   };
 
   return (
@@ -112,17 +135,21 @@ export default function ClauseDetail() {
           {/* Center */}
           <main className="col-span-6">
             {config ? (
-              <Tabs defaultValue="regra_padrao">
-                <TabsList className="w-full justify-start bg-muted/30 border border-border rounded-lg p-1 mb-6">
-                  <TabsTrigger value="regra_padrao" className="text-xs">Regra padrão</TabsTrigger>
+              <Tabs defaultValue="regra_geral">
+                <TabsList className="w-full justify-start bg-muted/30 border border-border rounded-lg p-1 mb-6 flex-wrap h-auto gap-0.5">
+                  <TabsTrigger value="regra_geral" className="text-xs">Regra geral</TabsTrigger>
+                  <TabsTrigger value="problemas" className="text-xs">Problemas</TabsTrigger>
                   <TabsTrigger value="decisoes" className="text-xs">Decisões</TabsTrigger>
-                  <TabsTrigger value="impactos" className="text-xs">Impactos</TabsTrigger>
+                  <TabsTrigger value="modelos" className="text-xs">Modelos</TabsTrigger>
                   <TabsTrigger value="redacao" className="text-xs">Redação</TabsTrigger>
                   <TabsTrigger value="arquitetura" className="text-xs">Arquitetura</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="regra_padrao">
+                <TabsContent value="regra_geral">
                   <ClauseDefaultRuleCard config={config} />
+                </TabsContent>
+                <TabsContent value="problemas">
+                  <ClauseProblemCards problems={config.commonProblems} />
                 </TabsContent>
                 <TabsContent value="decisoes">
                   <ClauseDecisionWizard
@@ -131,14 +158,25 @@ export default function ClauseDetail() {
                     onAnswer={handleAnswer}
                   />
                 </TabsContent>
-                <TabsContent value="impactos">
-                  <ClauseImpactPanel config={config} answers={answers} />
+                <TabsContent value="modelos">
+                  <ClauseOptionTemplatePanel
+                    templates={config.optionTemplates}
+                    recommendedTemplateId={recommendedTemplateId}
+                    selectedTemplateId={draftState?.selectedTemplateId || null}
+                    selectedComplementaryIds={draftState?.selectedComplementaryIds || []}
+                    onSelectTemplate={handleSelectTemplate}
+                    onToggleComplementary={handleToggleComplementary}
+                  />
                 </TabsContent>
                 <TabsContent value="redacao">
                   <ClauseDraftPreview
                     config={config}
                     activatedBlockIds={activatedBlockIds}
                     draftPreview={draftPreview}
+                    selectedTemplate={config.optionTemplates.find((t) => t.id === draftState?.selectedTemplateId)}
+                    selectedComplementaryTemplates={config.optionTemplates.filter(
+                      (t) => t.isComplementary && (draftState?.selectedComplementaryIds || []).includes(t.id)
+                    )}
                   />
                 </TabsContent>
                 <TabsContent value="arquitetura">
@@ -165,6 +203,8 @@ export default function ClauseDetail() {
                   answers={answers}
                   activatedBlockIds={activatedBlockIds}
                   customAlerts={customAlerts}
+                  selectedTemplateId={draftState?.selectedTemplateId || null}
+                  selectedComplementaryIds={draftState?.selectedComplementaryIds || []}
                 />
               )}
             </div>
