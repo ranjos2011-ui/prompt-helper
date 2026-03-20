@@ -10,6 +10,7 @@ import { FileText, Filter, AlertCircle, Link2, Ban, ChevronRight } from "lucide-
 
 export default function CaseClauses() {
   const { caseProfile, setCaseProfile, recommendations } = usePatrimonialBuilderStore();
+  const navigate = useNavigate();
   const [filterCategory, setFilterCategory] = useState<ClauseCategory | "all">("all");
   const [filterPriority, setFilterPriority] = useState<ClausePriority | "all">("all");
 
