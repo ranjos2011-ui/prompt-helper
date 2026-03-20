@@ -9,6 +9,7 @@ import NewCase from "./pages/NewCase";
 import CaseOverview from "./pages/CaseOverview";
 import CaseQuestions from "./pages/CaseQuestions";
 import CaseClauses from "./pages/CaseClauses";
+import ClauseDetail from "./pages/ClauseDetail";
 import CaseDocuments from "./pages/CaseDocuments";
 import CaseRisks from "./pages/CaseRisks";
 import CaseOutput from "./pages/CaseOutput";
