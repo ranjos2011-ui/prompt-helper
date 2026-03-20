@@ -6,6 +6,7 @@ import { mockCase } from "../data/mockCase";
 import { clauses } from "../data/clauses";
 import { priorityLabels, priorityColors, categoryLabels, documentTypeLabels } from "../lib/labels";
 import { ClauseCategory, ClausePriority } from "../types/enums";
+import { CasePremisesSummaryPanel } from "../components/CasePremisesSummaryPanel";
 import { FileText, Filter, AlertCircle, Link2, Ban, ChevronRight } from "lucide-react";
 
 export default function CaseClauses() {
