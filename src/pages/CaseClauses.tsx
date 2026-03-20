@@ -73,7 +73,11 @@ export default function CaseClauses() {
         {/* Clause cards */}
         <div className="space-y-3">
           {filtered.map(({ clause, rec }) => (
-            <div key={clause.id} className="border border-border rounded-lg bg-card overflow-hidden">
+            <div
+              key={clause.id}
+              className="border border-border rounded-lg bg-card overflow-hidden cursor-pointer transition-all hover:shadow-md hover:border-primary/20 active:scale-[0.995]"
+              onClick={() => navigate(`/case/${caseProfile?.id || 'case-001'}/clauses/${clause.id}`)}
+            >
               <div className="p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1">
