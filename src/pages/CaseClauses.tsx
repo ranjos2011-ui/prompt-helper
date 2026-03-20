@@ -6,6 +6,7 @@ import { mockCase } from "../data/mockCase";
 import { clauses } from "../data/clauses";
 import { priorityLabels, priorityColors, categoryLabels, documentTypeLabels } from "../lib/labels";
 import { ClauseCategory, ClausePriority } from "../types/enums";
+import { CasePremisesSummaryPanel } from "../components/CasePremisesSummaryPanel";
 import { FileText, Filter, AlertCircle, Link2, Ban, ChevronRight } from "lucide-react";
 
 export default function CaseClauses() {
@@ -44,6 +45,9 @@ export default function CaseClauses() {
             <p className="text-sm text-muted-foreground mt-1">{activeClauses.length} cláusulas ativas para este caso</p>
           </div>
         </div>
+
+        {/* Premises panel */}
+        <CasePremisesSummaryPanel />
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
