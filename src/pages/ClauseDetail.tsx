@@ -123,12 +123,15 @@ export default function ClauseDetail() {
           <aside className="col-span-3">
             <div className="sticky top-6">
               {caseProfile && (
-                <ClauseContextSidebar
-                  caseProfile={caseProfile}
-                  clause={clause}
-                  recommendation={recommendation}
-                  risks={risks}
-                />
+                <>
+                  <ClauseRelevantPremisesPanel clause={clause} />
+                  <ClauseContextSidebar
+                    caseProfile={caseProfile}
+                    clause={clause}
+                    recommendation={recommendation}
+                    risks={risks}
+                  />
+                </>
               )}
             </div>
           </aside>
