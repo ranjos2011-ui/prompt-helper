@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppShell } from "../components/AppShell";
 import { usePatrimonialBuilderStore } from "../store/usePatrimonialBuilderStore";
 import { mockCase } from "../data/mockCase";
 import { clauses } from "../data/clauses";
 import { priorityLabels, priorityColors, categoryLabels, documentTypeLabels } from "../lib/labels";
 import { ClauseCategory, ClausePriority } from "../types/enums";
-import { FileText, Filter, AlertCircle, Link2, Ban } from "lucide-react";
+import { FileText, Filter, AlertCircle, Link2, Ban, ChevronRight } from "lucide-react";
 
 export default function CaseClauses() {
   const { caseProfile, setCaseProfile, recommendations } = usePatrimonialBuilderStore();
