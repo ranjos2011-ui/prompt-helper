@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/case/:id/overview" element={<CaseOverview />} />
           <Route path="/case/:id/questions" element={<CaseQuestions />} />
           <Route path="/case/:id/clauses" element={<CaseClauses />} />
+          <Route path="/case/:id/clauses/:clauseId" element={<ClauseDetail />} />
           <Route path="/case/:id/documents" element={<CaseDocuments />} />
           <Route path="/case/:id/risks" element={<CaseRisks />} />
           <Route path="/case/:id/output" element={<CaseOutput />} />
