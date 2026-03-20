@@ -16,6 +16,8 @@ import { computeActivatedBlocks, generateDraftPreview, computeCustomAlerts } fro
 export interface PatrimonialBuilderState {
   caseProfile: CaseProfile | null;
   answers: Record<string, string>;
+  questionNotes: Record<string, string>;
+  generalInterviewNotes: string;
   activeClauseIds: string[];
   recommendations: Recommendation[];
   risks: Risk[];
@@ -26,6 +28,8 @@ export interface PatrimonialBuilderState {
 
   setCaseProfile: (profile: CaseProfile) => void;
   answerQuestion: (questionId: string, answerValue: string) => void;
+  saveQuestionNotes: (questionId: string, notes: string) => void;
+  setGeneralInterviewNotes: (notes: string) => void;
   setInitialEntrySelection: (moduleId: ModuleId, entryMode: EntryMode) => void;
   recalculateAll: () => void;
   generateOutput: () => void;
@@ -39,6 +43,8 @@ export interface PatrimonialBuilderState {
 export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, get) => ({
   caseProfile: null,
   answers: {},
+  questionNotes: {},
+  generalInterviewNotes: "",
   activeClauseIds: [],
   recommendations: [],
   risks: initialRisks,
@@ -61,6 +67,15 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
 
     set({ answers: newAnswers, completedQuestionIds: newCompleted });
     setTimeout(() => get().recalculateAll(), 0);
+  },
+
+  saveQuestionNotes: (questionId, notes) => {
+    const state = get();
+    set({ questionNotes: { ...state.questionNotes, [questionId]: notes } });
+  },
+
+  setGeneralInterviewNotes: (notes) => {
+    set({ generalInterviewNotes: notes });
   },
 
   setInitialEntrySelection: (moduleId, entryMode) => {
@@ -119,6 +134,8 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
     set({
       caseProfile: null,
       answers: {},
+      questionNotes: {},
+      generalInterviewNotes: "",
       activeClauseIds: [],
       recommendations: [],
       risks: initialRisks,

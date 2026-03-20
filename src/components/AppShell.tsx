@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "overview", label: "Visão Geral", icon: LayoutDashboard },
-  { path: "questions", label: "Perguntas", icon: HelpCircle },
+  { path: "questions", label: "Entrevista", icon: HelpCircle },
+  { path: "premises", label: "Premissas", icon: FileText },
   { path: "clauses", label: "Cláusulas", icon: FileText },
   { path: "documents", label: "Documentos", icon: FolderOpen },
   { path: "risks", label: "Riscos", icon: AlertTriangle },

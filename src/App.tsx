@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import NewCase from "./pages/NewCase";
 import CaseOverview from "./pages/CaseOverview";
 import CaseQuestions from "./pages/CaseQuestions";
+import CasePremises from "./pages/CasePremises";
 import CaseClauses from "./pages/CaseClauses";
 import ClauseDetail from "./pages/ClauseDetail";
 import CaseDocuments from "./pages/CaseDocuments";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/new-case" element={<NewCase />} />
           <Route path="/case/:id/overview" element={<CaseOverview />} />
           <Route path="/case/:id/questions" element={<CaseQuestions />} />
+          <Route path="/case/:id/premises" element={<CasePremises />} />
           <Route path="/case/:id/clauses" element={<CaseClauses />} />
           <Route path="/case/:id/clauses/:clauseId" element={<ClauseDetail />} />
           <Route path="/case/:id/documents" element={<CaseDocuments />} />
