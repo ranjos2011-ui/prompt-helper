@@ -31,6 +31,7 @@ export interface PatrimonialBuilderState {
   answerQuestion: (questionId: string, answerValue: string) => void;
   saveQuestionNotes: (questionId: string, notes: string) => void;
   setGeneralInterviewNotes: (notes: string) => void;
+  setClientQualification: (text: string) => void;
   setInitialEntrySelection: (moduleId: ModuleId, entryMode: EntryMode) => void;
   recalculateAll: () => void;
   generateOutput: () => void;
