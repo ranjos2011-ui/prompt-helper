@@ -18,6 +18,7 @@ export interface PatrimonialBuilderState {
   answers: Record<string, string>;
   questionNotes: Record<string, string>;
   generalInterviewNotes: string;
+  clientQualification: string;
   activeClauseIds: string[];
   recommendations: Recommendation[];
   risks: Risk[];
