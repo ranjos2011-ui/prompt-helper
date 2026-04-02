@@ -18,6 +18,7 @@ export interface PatrimonialBuilderState {
   answers: Record<string, string>;
   questionNotes: Record<string, string>;
   generalInterviewNotes: string;
+  clientQualification: string;
   activeClauseIds: string[];
   recommendations: Recommendation[];
   risks: Risk[];
@@ -30,6 +31,7 @@ export interface PatrimonialBuilderState {
   answerQuestion: (questionId: string, answerValue: string) => void;
   saveQuestionNotes: (questionId: string, notes: string) => void;
   setGeneralInterviewNotes: (notes: string) => void;
+  setClientQualification: (text: string) => void;
   setInitialEntrySelection: (moduleId: ModuleId, entryMode: EntryMode) => void;
   recalculateAll: () => void;
   generateOutput: () => void;
@@ -45,6 +47,7 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
   answers: {},
   questionNotes: {},
   generalInterviewNotes: "",
+  clientQualification: "",
   activeClauseIds: [],
   recommendations: [],
   risks: initialRisks,
@@ -76,6 +79,10 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
 
   setGeneralInterviewNotes: (notes) => {
     set({ generalInterviewNotes: notes });
+  },
+
+  setClientQualification: (text) => {
+    set({ clientQualification: text });
   },
 
   setInitialEntrySelection: (moduleId, entryMode) => {
@@ -136,6 +143,7 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
       answers: {},
       questionNotes: {},
       generalInterviewNotes: "",
+      clientQualification: "",
       activeClauseIds: [],
       recommendations: [],
       risks: initialRisks,
