@@ -81,6 +81,10 @@ export const usePatrimonialBuilderStore = create<PatrimonialBuilderState>((set, 
     set({ generalInterviewNotes: notes });
   },
 
+  setClientQualification: (text) => {
+    set({ clientQualification: text });
+  },
+
   setInitialEntrySelection: (moduleId, entryMode) => {
     const state = get();
     if (state.caseProfile) {
