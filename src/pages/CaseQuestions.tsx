@@ -5,7 +5,7 @@ import { mockCase } from "../data/mockCase";
 import { questions } from "../data/questions";
 import { clauses } from "../data/clauses";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2, ChevronLeft, ChevronRight, HelpCircle, Lightbulb, AlertTriangle, MessageSquare, ChevronDown } from "lucide-react";
+import { CheckCircle2, ChevronLeft, ChevronRight, HelpCircle, Lightbulb, AlertTriangle, MessageSquare, ChevronDown, UserCircle } from "lucide-react";
 
 export default function CaseQuestions() {
   const {
@@ -13,8 +13,9 @@ export default function CaseQuestions() {
     completedQuestionIds, recommendations, alerts,
     questionNotes, saveQuestionNotes,
     generalInterviewNotes, setGeneralInterviewNotes,
+    clientQualification, setClientQualification,
   } = usePatrimonialBuilderStore();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1); // -1 = client qualification
   const [showNotes, setShowNotes] = useState<Record<string, boolean>>({});
   const [showGeneralNotes, setShowGeneralNotes] = useState(false);
 
@@ -25,10 +26,9 @@ export default function CaseQuestions() {
   if (!caseProfile) return null;
 
   const moduleQuestions = questions.filter(q => q.moduleId === caseProfile.selectedModule);
-  const currentQ = moduleQuestions[currentIndex];
+  const showingQualification = currentIndex === -1 && !showGeneralNotes;
+  const currentQ = currentIndex >= 0 ? moduleQuestions[currentIndex] : undefined;
   const isLastQuestion = currentIndex === moduleQuestions.length - 1;
-
-  if (!currentQ && !showGeneralNotes) return null;
 
   const selectedAnswer = currentQ ? answers[currentQ.id] : undefined;
   const currentNotes = currentQ ? questionNotes[currentQ.id] || "" : "";
@@ -50,6 +50,27 @@ export default function CaseQuestions() {
             Entrevista ({completedQuestionIds.length}/{moduleQuestions.length})
           </h3>
           <div className="space-y-0.5">
+            {/* Client qualification sidebar item */}
+            <button
+              onClick={() => { setCurrentIndex(-1); setShowGeneralNotes(false); }}
+              className={`w-full text-left flex items-center gap-2 px-2.5 py-2 rounded text-xs transition-colors mb-1 ${
+                showingQualification
+                  ? "bg-primary/10 text-primary font-medium"
+                  : clientQualification
+                  ? "text-muted-foreground"
+                  : "text-foreground/70 hover:bg-muted"
+              }`}
+            >
+              {clientQualification ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" />
+              ) : (
+                <UserCircle className={`h-3.5 w-3.5 shrink-0 ${showingQualification ? "text-primary" : ""}`} />
+              )}
+              <span className="truncate flex-1">Qualificação do cliente</span>
+            </button>
+
+            <div className="border-t border-border mb-1 pt-1" />
+
             {moduleQuestions.map((q, i) => {
               const done = completedQuestionIds.includes(q.id);
               const isCurrent = i === currentIndex && !showGeneralNotes;
@@ -96,7 +117,53 @@ export default function CaseQuestions() {
         {/* Center */}
         <div className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-2xl mx-auto">
-            {showGeneralNotes ? (
+            {showingQualification ? (
+              /* Client qualification */
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-medium uppercase tracking-wider text-gold bg-gold/10 px-2.5 py-0.5 rounded-full">
+                    Qualificação
+                  </span>
+                </div>
+                <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                  Qualificação do cliente
+                </h2>
+                <p className="text-base text-muted-foreground mb-4">
+                  Registre as informações essenciais sobre o cliente e o caso antes de iniciar a entrevista.
+                </p>
+
+                <div className="bg-muted/50 border border-border rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-2">
+                    <HelpCircle className="h-4 w-4 text-info mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Identifique o cliente, sua composição familiar, os bens relevantes, a estrutura societária existente e quaisquer elementos contextuais que ajudem a conduzir a entrevista.
+                      </p>
+                      <p className="text-xs text-muted-foreground/70 mt-2 italic">
+                        Essas informações serão usadas como contexto para as premissas do projeto e para a modelagem das cláusulas.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <Textarea
+                  value={clientQualification}
+                  onChange={(e) => setClientQualification(e.target.value)}
+                  placeholder="Ex: João Silva, 68 anos, empresário. Casado em comunhão parcial com Maria (segundo casamento). Três filhos: dois do primeiro casamento (Pedro, 40, e Ana, 38) e um do atual (Lucas, 15). Holding patrimonial XYZ Participações Ltda. com imóveis, participações societárias e aplicações financeiras. Patrimônio estimado em R$ 25M. Pedro já atua na gestão; Ana e Lucas não participam. Preocupações: proteção contra cônjuges dos filhos, continuidade da gestão, equalização patrimonial sem conflito."
+                  className="min-h-[240px] text-sm leading-relaxed resize-y"
+                />
+
+                <div className="flex items-center justify-end pt-6 border-t border-border mt-6">
+                  <button
+                    onClick={() => setCurrentIndex(0)}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Iniciar entrevista
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ) : showGeneralNotes ? (
               /* General interview notes */
               <div>
                 <div className="flex items-center gap-2 mb-4">
@@ -244,12 +311,11 @@ export default function CaseQuestions() {
                 {/* Navigation */}
                 <div className="flex items-center justify-between pt-4 border-t border-border">
                   <button
-                    onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-                    disabled={currentIndex === 0}
-                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                    onClick={() => setCurrentIndex(currentIndex - 1)}
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <ChevronLeft className="h-4 w-4" />
-                    Anterior
+                    {currentIndex === 0 ? "Qualificação" : "Anterior"}
                   </button>
                   {isLastQuestion ? (
                     <button
